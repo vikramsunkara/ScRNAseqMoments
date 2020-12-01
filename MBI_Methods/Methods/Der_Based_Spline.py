@@ -50,14 +50,14 @@ def Residual_Func(K, E, T, Design_Blocks, Moments_Fit, Moments_Spline, Spline_de
         '''
         
         @brief Compute residual function
-        @param K : parameter                                        array           (#params)
-        @param E : moments 		                            array 	    (#moments,)
-        @param T : time of snapshots                                array           (#moments,)
-        @param Design_Blocks : A block from the desing matrix       ndarray         (#params, #moments, #moments + #highermoments) 
-        @param Moments_Fit : boolean moments                        array           (#moments + #highermoments)
-        @param Moments_Spline : boolean higher order moments        array           (#moments + #highermoments)
-        @param Spline_der_bool: boolean                             boolean                           
-        @param weights : weight considered on moments               ndarray         (#moments, #moments)
+        @param K : parameter                                            array           (#params)
+        @param E : moments 		                                array 	    (#moments,)
+        @param T : time of snapshots                                    array           (#moments,)
+        @param Design_Blocks : A block from the desing matrix           ndarray         (#params, #moments, #moments + #highermoments) 
+        @param Moments_Fit : boolean moments                            array           (#moments + #highermoments)
+        @param Moments_Spline : boolean higher order moments            array           (#moments + #highermoments)
+        @param Spline_der_bool: boolean                                 boolean                           
+        @param weights : weight considered on residuals of moments      ndarray         (#moments, #moments)
         
         '''
         

@@ -100,7 +100,16 @@ pdb.set_trace()
 
 
 def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs'):
-
+        '''
+        @params Data_list: list of moments data to infere GRN from            list of array      (#num_data) 
+        @params Data_Names: corresponding names of data                       list of string     (#num_data)
+        @params Run_Names: name of the batch run                              string
+        @params shift: shift of moments data                                  integer
+        @params sub_sample: sub sampling frequency                            integer
+        @params PDF_Save_dir: path to folder to safe figures
+        @params GRNs: path to folder to save infered GRN
+        
+        '''
         MB_LLS_pdf_reaction_firing = PdfPages('%s/%s_MB_LLS_Reactions.pdf'%(PDF_Save_dir,Run_Name))
         NLLS_pdf_push_forward = PdfPages('%s/%s_NLLS_push_fowrads.pdf'%(PDF_Save_dir,Run_Name))
         NLLS_pdf_reaction_firing = PdfPages('%s/%s_NLLS_Reactions.pdf'%(PDF_Save_dir,Run_Name))
