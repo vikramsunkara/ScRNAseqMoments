@@ -9,8 +9,11 @@ import joblib as jb
 from functools import partial 
 
 """
-SSA of predator prey model to evolve the system forward in time and return the moments of interests
+SSA of Stochatic Damped Oscillator model 
+evolve the system forward in time 
+and return the moments of interests
 """
+
 # All reactions
 Reactions = [
 "* -> A, #1",          # true k_1 = 4.000
@@ -159,18 +162,7 @@ def SampleXY_moms(n, Alltraj, Collect_moms, moms_lookUp1 = moms_lookUp):
     return np.array(Moms_std)
 
 def SSA_moms_std(K, T, Moments_collect, K_lab = "SSA_samples_tests/", subfit = 1 , Num_samples = 100, moms_lookUp_val = moms_lookUp, maxTime = 10, ntasks = 4): 
-    """
-    Alltraj_val = []
-    for j in range(0, Num_samples):
-        TRAJsample = SSA(K, T)
-        Alltraj_val.append(TRAJsample)
-  
-    Moms_and_std = np.zeros((len(T), np.sum(Moments_collect), 2))
-    
-    for n in range(len(T)):
-        Moms_and_std[n, :, :] = SampleXY_moms(n, Num_samples, Alltraj_val, Moments_collect) 
-    """
-    
+
     Div = 100
     q,r = divmod(Num_samples,Div)
     
@@ -186,6 +178,7 @@ def SSA_moms_std(K, T, Moments_collect, K_lab = "SSA_samples_tests/", subfit = 1
         print(n1+1, "out of", len(break_num_samples), "subsample", subfit)
         Ns = break_num_samples[n1]
         ### Save each Ns trajectories ###
+        
         """
         TRAJ_Ns = jb.Parallel(n_jobs = ntasks)(jb.delayed(SSAp)() for sp in range(Ns))
         #TRAJ += list(TRAJ_Ns)
@@ -217,102 +210,6 @@ def SSA_moms_std(K, T, Moments_collect, K_lab = "SSA_samples_tests/", subfit = 1
     
     return Moms_and_std
     
-
-# Tests run
-if __name__ == "__main__":
-        ### Import data and all necessary arguments for SINDY and NLLS ###        
-        #K_init = K_true
-
-        from Data_Loader_PP import *
-        #### Run and demo ####
-        sub_sample = 2**4 # subsample points from which the fit was perfomed
-
-        K_sindy = np.array([12.5018, 0.0000, 0.0000, 0.2328, 2.3894, 0.0000, 0.0000, 0.0353, 0.0000, 0.1452, 1.2801, 0.0000, 0.1507])
-        K_nlls_with_der = np.array([12.4174, 0.0000, 0.0186, 0.8106, 2.2194, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 1.2943, 0.0004, 0.0035]) 
-
-        K_list = [K_true, K_sindy, K_nlls_with_der]
-        
-        label_list = ["SSA with K true", "SSA with K sindy", "SSA with K NLLS (with derivatives)"]
-        folders = ["Data/K_true/SSA/", "Data/K_sindy/SSA/", "Data/K_nlls_der/SSA/"]
-        lt = ["-b", "-r", "-g"]
-        
-        plt.figure(figsize = (15, 7.5))
-        ax1 = plt.subplot(121)
-        ax2 = plt.subplot(122)
-        
-        Mom_list = Mom_list[Shift_data:,:][:Cut_off,:]
-        TT = TT[Shift_data:][:Cut_off]
-        
-        Mom_list[:,0] = 1.0
-        
-        fsize = 14
-        tic = time.time()
-        
-        Moments_collect = np.array([True,True,True,True,True,True,False,False,False,False])
-        Moments_labels = np.array(["1", "E_X", "E_Y", "E_X_X", "E_X_Y", "E_Y_Y", "E_X_X_X", "E_X_X_Y", "E_X_Y_Y", "E_Y_Y_Y"])
-        
-        N_samples = 50
-        for i in range(2,len(K_list)):
-            print(i, len(K_list))
-            
-            SSA_list = SSA_moms_std(K_list[i], TT, Moments_collect,  Num_samples = N_samples, ntasks = 2)
-            
-            #Save all the runs
-            Mom_list_ssa = SSA_list[:, :, 0]
-            #pdb.set_trace()
-            """
-            obj = {"SSA_means":SSA_list[:, :, 0], 
-                    "SSA_std":SSA_list[:, :, 1],
-                    "Times":TT,
-                "Parameters":K_list[i],
-            "species_label":Moments_labels[Moments_collect]}
-            pickle.dump(obj, open(folders[i]+"SSA_test.pck", "wb"))
-        
-            #load data
-            f = open(folders[i]+"SSA_test.pck","rb")
-            stuff = pickle.load(f)
-            f.close()
-            
-            Mom_list_ssa = np.array(stuff["SSA_means"])
-            TT = np.array(stuff["Times"])
-            """    
-            E_X_SSA = Mom_list_ssa[:, 1]
-            E_Y_SSA = Mom_list_ssa[:, 2]
-            
-            ax1.plot(TT, E_X_SSA, lt[i], linewidth = 2) #, label = label_list[i])
-            if i == len(K_list) -1 :
-                ax1.plot(TT, Mom_list[:, 1], "x", color="blue", markersize = 6, label = "Data $E_X$")
-                ax1.plot(TT[::sub_sample], Mom_list[::sub_sample,1], "o", color = "blue", markersize = 6, label = "Data $E_X$ used in NLLS")
-                ax1.set_title("$E_X$", fontsize = fsize)
-                ax1.legend(fontsize = fsize)
-                
-            ax2.plot(TT, E_Y_SSA, lt[i], linewidth = 2, label = label_list[i])
-            if i == len(K_list) -1 :
-                ax2.plot(TT, Mom_list[:, 2], "x", color="blue", markersize = 6, label= "Data $E_Y$")
-                ax2.plot(TT[::sub_sample], Mom_list[::sub_sample, 2], "o", color = "blue", markersize = 6, label = "Data $E_Y$ used in NLLS")
-        
-                ax2.set_title("$E_Y$", fontsize = fsize)
-                ax2.legend(fontsize = fsize)
-            toc = time.time()
-            print("It took", toc - tic)
-            tic = toc
-        
-        for t_s in TT[::sub_sample]:          
-            ax1.axvline(x = t_s, ls = "--", linewidth = 1)
-            ax2.axvline(x = t_s, ls = "--", linewidth = 1)
-            
-        ax1.set_ylabel("Magnitude", fontsize = fsize)
-        ax1.set_xlabel("Time", fontsize = fsize)
-        ax2.set_xlabel("Time", fontsize = fsize)
-        plt.subplots_adjust(bottom = 0.17, right = 0.95, left = 0.06, top = 0.92, wspace = 0.15, hspace = 0.20)
-        try:
-            plt.suptitle("%d sample trajectories"%N_samples, fontsize = fsize) 
-        except:
-            plt.suptitle("%d sample trajectories"%100, fontsize = fsize)                 
-        
-        plt.show()                              
-        #plt.savefig("SSA_test_fig.png" 
-        # this is just a random line
 
 
 
