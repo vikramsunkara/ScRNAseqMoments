@@ -2,7 +2,8 @@
 ## Inferring Gene Regulatory Networks from Single Cell RNA-seq Temporal Snapshot Data Requires Higher Order Moments
 
 ### Generate synthetic scRNA-seq dataset for two-gene interaction models: GRN_Models
-No-I Model: mRNA A: `A_MRNA_No_UpRegulation.py` and for mRNA: `B_MRNA_No_UpRegulation.py` (after separate runs, the datasets were collated in one)
+No-I Model: mRNA A: `A_MRNA_No_UpRegulation.py` and for mRNA: `B_MRNA_No_UpRegulation.py`
+(after separated runs, the datasets were collated in one)
 
 Mono-I Model: `MRNA_No_UpRegulation.py`
 
