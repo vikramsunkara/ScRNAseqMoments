@@ -40,12 +40,14 @@ Species_To_Store = np.array([False,False,False,False,True,True])
 BatchNum = 400 # Number of replicate datasets
 for i in range(len(File_list)):
     input_file = File_list[i]
+    
+    # compute moments for BatchNum replicate datasets
     Moms_time_data = []
     for n in range(BatchNum):
-        # compute moments
         data = Load_moms_time(input_file, Moments, keep_species = Species_To_Store)
         Moms_time_data.append(data)
-
+    
+    # preform GRN inference for each dataset in the Batch
     Batch_Inference(Moms_time_data, [DLab_m[i]+"(#%d)"%n for n in range(BatchNum)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs')
 
 
