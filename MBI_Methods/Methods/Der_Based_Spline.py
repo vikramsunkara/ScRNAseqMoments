@@ -8,12 +8,12 @@ import pdb
 def der(t, E, K_fit, A_Blocks, B_Blocks, E_Splines):
 	'''
 	@brief Computes the derivative given the design blocks
-	@param t time			scalar
-	@param E moments 		array 		(#moments,)
-	@param K_fit parameter		array		(#params,)
-	@param A_Blocks 	 	dnarray		(#params, #moments, #moments)
-	@param B_Blocks         dnarray     (#params, #moments, #highermoments)
-	@param E_Splines 		func        t -> array(#highermoments,)
+	@param t : time			                        scalar
+	@param E : moments 		                        array 		(#moments,)
+	@param K_fit : parameter	                        array		(#params,)
+	@param A_Blocks: A block from the desing matrix	 	dnarray		(#params, #moments, #moments)
+	@param B_Blocks: A block from the desing matrix         dnarray         (#params, #moments, #highermoments)
+	@param E_Splines: spline of higher order moments        func            t -> array(#highermoments,)
 	'''
 
 	A = np.sum(A_Blocks*K_fit[:,np.newaxis,np.newaxis],axis=0)
@@ -26,6 +26,16 @@ def der(t, E, K_fit, A_Blocks, B_Blocks, E_Splines):
 
 
 def Spline_With_Der(K, E, T, Design_Blocks, Moments_Spline):
+        '''
+        
+        @brief Computes derivativs adjusted splines of the higher order moments 
+        @param K : parameter                                        array           (#params)
+        @param E : moments 		                            array 	    (#moments,)
+        @param T : time of snapshots                                array           (#moments,)
+        @param Design_Blocks : A block from the desing matrix       ndarray         (#params, #moments, #moments + #highermoments) 
+        @param Moments_Spline : boolean higher order moments        array           (#moments + #highermoments)
+        
+        '''
 
 	Design_4_Spline = np.sum(Design_Blocks[:,Moments_Spline[:Design_Blocks.shape[1]],:]*K[:,np.newaxis,np.newaxis], axis = 0)
 
@@ -36,8 +46,21 @@ def Spline_With_Der(K, E, T, Design_Blocks, Moments_Spline):
 
 	return der_based_Spline
 
-def Residual_Func(K, E, T, Design_Blocks, Moments_Fit, Moments_Spline, Spline_der_bool, Weights=None):
-
+def Residual_Func(K, E, T, Design_Blocks, Moments_Fit, Moments_Spline, Spline_der_bool = True, Weights=None):
+        '''
+        
+        @brief Compute residual function
+        @param K : parameter                                        array           (#params)
+        @param E : moments 		                            array 	    (#moments,)
+        @param T : time of snapshots                                array           (#moments,)
+        @param Design_Blocks : A block from the desing matrix       ndarray         (#params, #moments, #moments + #highermoments) 
+        @param Moments_Fit : boolean moments                        array           (#moments + #highermoments)
+        @param Moments_Spline : boolean higher order moments        array           (#moments + #highermoments)
+        @param Spline_der_bool: boolean                             boolean                           
+        @param weights : weight considered on moments               ndarray         (#moments, #moments)
+        
+        '''
+        
 	##
 	# Choosing the Spline Method
 	##
