@@ -32,22 +32,10 @@ def Find_Reaction_Index(a):
     while r == 0:
         r = np.random.rand()
     
-    
-    # data file ending with _3
-    """
-    b = np.concatenate((np.zeros(1), a))
-    b_left = np.cumsum(b[0:len(b)-1])
-    b_right = np.cumsum(b[1:len(b)])
-    tau = r*sum(a)
-    test = (b_left < tau)*(tau <= b_right)
-    j_chosen1 = list(test).index(True)
-    """
-    #return j_chosen
-   
     cum_prop = np.cumsum(a)
-    j_chosen2 = np.sum(cum_prop < r*cum_prop[-1])
+    j_chosen = np.sum(cum_prop < r*cum_prop[-1])
     
-    return j_chosen2
+    return j_chosen
 
 def SSA(Stochiometry,Propensities,X_0, t_0, t_final):
     """

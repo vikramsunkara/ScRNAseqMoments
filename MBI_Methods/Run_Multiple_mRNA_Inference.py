@@ -85,25 +85,18 @@ W_NLLS[2,2] = 1.#40.0
 # Load Design Blocks
 #######
 
-# MB-LLS
+# Linear MBI
 blockPrint()
 inds = np.where(MB_LLS_Moments_Fit)[0]
 moms_lookUp_list = [moms_lookUp_list[i] for i in inds]
 Design_Blocks_MB_LLS = GDB(hash_lookUp, moms_lookUp_list, Verbose=False)
 
-# NLLS
+# Nonlinear MBI
 inds = np.where(NLLS_Moments_Fit+Moments_Spline)[0]
 moms_lookUp_list = [moms_lookUp_list[i] for i in inds]
 Design_Blocks_NLLS = GDB(hash_lookUp, moms_lookUp_list, Verbose=False)
 enablePrint()
-'''Faimport sys, os
-###
-# Data Shifting 
-###
 
-shift = 30
-sub_sample     = 15
-'''
 
 def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs'):
 
@@ -138,7 +131,7 @@ def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15
             ##############
             
 
-            # SINDY Inference
+            # Linear MBI 
             blockPrint()
             tic = time.time()
             x_opt, st_sindy = SINDY(E, T, Design_Blocks_MB_LLS, fit = MB_LLS_Moments_Fit, weights = W_BM_LLS)
@@ -147,7 +140,7 @@ def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15
             MB_LLS_params.append(x_opt)
             status_sindy.append(st_sindy)
             
-            # NLLS Inference
+            # Nonlinear MBI
 
             tic = time.time()
             NLLS_est, st_nlls = NLLS_Fit(np.abs(x_opt), E, T, Design_Blocks_NLLS, NLLS_Moments_Fit, Moments_Spline, Spline_der_bool, weights = W_NLLS)
