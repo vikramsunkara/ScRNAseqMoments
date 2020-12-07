@@ -84,7 +84,7 @@ def Parrallel(SSAp, N, ntasks):
     
         X_SSA = np.array(Resamples).T
         
-        #f = open('/nfs/datanumerik/people/araharin/two_MRNA_No_Up_test/data_N_%d.pck'%(100+n1),'wb')
+        # please put your saving folder
         f = open('/nfs/datanumerik/people/araharin/two_MRNA_No_Up/data_N_%d.pck'%(100+n1),'wb')
 
         pickle.dump({'Obs': X_SSA ,'Time': T, 'dim_order':'Time, Dim, Repeat'},f)
