@@ -7,8 +7,8 @@ def NLLS_Fit(K_ini, E, T, Design_Blocks, Moments_Fit, Moments_Spline, Spline_der
         
         @brief perform a nonlinear least square minimization for the Nonlinear MBI method
         @param K_ini : initial guess                                    array           (#params)
-        @param E : moments 		                                array 	        (#moments,)
-        @param T : time of snapshots                                    array           (#moments,)
+        @param E : moments                                              array           (#moments,)
+        @param T : time values of snapshots                             array           (#moments,)
         @param Design_Blocks : A block from the desing matrix           ndarray         (#params, #moments, #moments + #highermoments) 
         @param Moments_Fit : boolean moments                            array           (#moments + #highermoments)
         @param Moments_Spline : boolean higher order moments            array           (#moments + #highermoments)

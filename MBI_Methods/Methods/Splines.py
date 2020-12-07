@@ -1,6 +1,5 @@
-# Computing the deivative for the splined data
+# Computing the derivative for the splined data
 import numpy as np
-import pdb
 
 def spline_Differencing(XX, TT):
 	from scipy.interpolate import CubicSpline
@@ -24,6 +23,7 @@ def spline_Differencing(XX, TT):
 	
 	return Arr.T 
 
+# Building the linear operator for the linear MBI method
 def Build_Design_Matrix(XX, Design_Blocks):
 
 	## XX is Obs x Species
