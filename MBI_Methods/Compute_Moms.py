@@ -5,8 +5,8 @@ import pylab as pl
 
 def Sims_2_Moms(Sim_Block, Moments):
     '''
-    Sim_Block         numpy array      (Time, Dim, Repeats)
-    Moments         List              numpy arrays [(Dim,),...]
+    @param Sim_Block: data                 numpy array           (#Time, #Dim, #Repeats)
+    @param Moments:   exponents            List of arrays        [(#Dim,),...]
     '''
     num_Moms = len(Moments)
     Sim_Block = Sim_Block.astype(np.float)
@@ -23,28 +23,13 @@ def Sims_2_Moms(Sim_Block, Moments):
     return Moms
 
 
-def Sims_2_Moms(Sim_Block, Moments):
-    '''
-    Sim_Block         numpy array      (Time, Dim, Repeats)
-    Moments         List              numpy arrays [(Dim,),...]
-    '''
-    num_Moms = len(Moments)
-    Sim_Block = Sim_Block.astype(np.float)
-    
-    Moms = np.zeros((Sim_Block.shape[0],len(Moments)+1))
-
-    Moms[:,0] = 1.0
-    
-    for i in range(num_Moms):
-        for t in range(Sim_Block.shape[0]):
-            Powered = np.power(Sim_Block,Moments[i][np.newaxis,:,np.newaxis])
-            Produced = np.prod(Powered,axis=1)
-        Moms[:,i+1] = np.average(Produced,axis=1)
-
-    return Moms
-
-
 def compute_moms(data, Moments, keep_species):
+    '''
+    @param data   : data from which to compute moments      ndarray              (#Time, #Dim, #Repeats)
+    @param Moments: exponents                               List of arrays       [(#Dim),...]
+    @param keep_species: species to compute moments         array of bool        (#Dim,)
+    
+    '''
     if keep_species is None: # process all species
         Moms = Sims_2_Moms(data,Moments)
     else:
@@ -53,6 +38,13 @@ def compute_moms(data, Moments, keep_species):
 
 
 def Load_moms_time(input_filename, Moments, keep_species =None, sample_size = 10000):
+    '''
+    @brief load datafile and compute target moments
+    @param input_filename     : datafile                           pickle object containing ndarray of dimension (#Time, #Dim, #Repeats)
+    @param Moments            : exponents                          List of arrays                                [(#Dim),...]
+    @param keep_species       : species to compute moments         array of bools                                (#Dim,)
+    @param sample_size        : 
+    '''
     f = open(input_filename,'rb')
     input_dic = pickle.load(f)
     f.close()

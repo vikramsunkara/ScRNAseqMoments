@@ -10,7 +10,7 @@ from Compute_Moms import *
 """
 Multiple inference for the three models (Double Up, No Up, Single Up) with all simulations 
 having initial condition (G1, G2, P1, P2, M1, M2) =(0, 0, 0, 0, 0, 0) (we only used M1 and M2)
-Input files, to change were appropriate
+Input files, to change where appropriate
 """
 
 File1 = "/2mRNA_100000/two_MRNA_Double_Up_data_100000.pck" 
@@ -20,7 +20,7 @@ File3 = "/2mRNA_100000/two_MRNA_Single_Up_data_100000.pck"
 """
 Multiple inference for the model Single Up with all simulations 
 having different conditions of the form (G1, G2, P1, P2, M1, M2) =(0, 0, 0, 0, M1, M2) (we only change M1 and M2)
-Input files, to change were appropriate
+Input files, to change where appropriate
 """
 
 File3a = "/2mRNA_100000/two_MRNA_Single_Up_data_70_0_100000.pck" 

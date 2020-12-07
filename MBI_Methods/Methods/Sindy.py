@@ -28,7 +28,7 @@ def SINDY(E, T, Design_Blocks, fit = None, weights = None, sum_params = 1000):
 
 	if weights is not None:
 		Design = np.einsum('tdk,dd-> tdk', Design, weights)
-		derivatives = np.einsum('td,dd -> td', derivatives,weights)
+		derivatives = np.einsum('td,dd -> td', derivatives, weights)
 
 	b = derivatives.flatten()
 	A = Design.reshape(-1, Design.shape[-1])
