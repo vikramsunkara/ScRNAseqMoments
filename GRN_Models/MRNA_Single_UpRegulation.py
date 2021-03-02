@@ -18,7 +18,7 @@ k = 5.0
 
 #species = ('G1','G2','P1','P2', 'M1','M2')
 
-def propensities(x):
+def propensities(x, sigma_1 = sigma_1):
 	return np.array(
 				[sigma_1*x[3]*(1-x[0]), 
 				sigma_2*x[0],
@@ -76,7 +76,7 @@ ntasks = 40
 
 import SSA
 
-def Parrallel(SSAp, N, ntasks):
+def Parrallel(SSAp, N, ntasks, i):
     q,r = divmod(N,100)
     if r == 0:
         break_num_samples = [100]*q
@@ -90,7 +90,7 @@ def Parrallel(SSAp, N, ntasks):
     
         X_SSA = np.array(Resamples).T
     
-        f = open('/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Single_Up/data_N_%d.pck'%n1,'wb')
+        f = open('/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Single_Up/data_N_%d_%d.pck'%(n1, i),'wb')
         
         pickle.dump({'Obs': X_SSA ,'Time': T, 'dim_order':'Time, Dim, Repeat'},f)
         f.close()
@@ -98,9 +98,15 @@ def Parrallel(SSAp, N, ntasks):
 
 import time
 
+sigma_1_list = sigma_1*np.array([1/2, 2, 2**2, 2**3, 2**4]) # to run sensitivity to sigma_1
 tick = time.time()
-SSAp = partial(SSA.SSA_Fixed_Width_Trajectory, Stochiometry = transitions, Propensities = propensities, X_0 = initial_state,T_Obs_Points=T)
-Parrallel(SSAp, N, ntasks)
-tock = time.time()
 
-print(tock-tick)
+for i in range(len(sigma_1_list)):
+    sigma1 = sigma_1_list[i]
+    propensities_p = partial(propensities, sigma_1 = sigma1)
+
+    SSAp = partial(SSA.SSA_Fixed_Width_Trajectory, Stochiometry = transitions, Propensities = propensities_p, X_0 = initial_state,T_Obs_Points=T)
+    Parrallel(SSAp, N, ntasks, i)
+    tock = time.time()
+    
+    print(tock-tick)
