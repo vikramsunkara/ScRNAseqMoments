@@ -5,7 +5,7 @@
 No-I Model: mRNA A: `A_MRNA_No_UpRegulation.py` and for mRNA: `B_MRNA_No_UpRegulation.py`
 (after separated runs, the datasets were collated in one)
 
-Mono-I Model: `MRNA_No_UpRegulation.py`
+Mono-I Model: `MRNA_Single_UpRegulation.py`
 
 Bi-I Model: `MRNA_Double_UpRegulation.py`
 
