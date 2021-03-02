@@ -52,8 +52,10 @@ transitions = np.array([ (1,0,0,-1,0,0), # G_1_off + P2 --> G_1_on
 				(0,0,0,-1,0,0), # P_2 --> 0
 				(0,0,0,0,0,-1)  # M_2 --> 0
 				]).T
-#initial_state = np.array([0,0,0,0,0,0]) # Main folder without ending
-initial_state = np.array([0,0,0,0,70,0]) # Folder ending with 70_0
+
+    
+initial_state = np.array([0,0,0,0,0,0]) # Main folder without ending
+#initial_state = np.array([0,0,0,0,70,0]) # Folder ending with 70_0
 #initial_state = np.array([0,0,0,0,0,70]) # Folder ending with 0_70
 #initial_state = np.array([0,0,0,0,70,70]) # Folder ending with 70_70
 
@@ -62,8 +64,8 @@ species = ('G1','G2','P1','P2', 'M1','M2')
 
 delta_t = 0.5
 T = np.arange(0.0,80.0,delta_t)
-N =90000
-ntasks = 40#40
+N =100000
+ntasks = 40
 ##############
 ## SSA
 ##############
@@ -88,10 +90,7 @@ def Parrallel(SSAp, N, ntasks):
     
         X_SSA = np.array(Resamples).T
     
-        #f = open('/nfs/datanumerik/people/araharin/two_MRNA_Single_Up/data_N_%d.pck'%(100+n1),'wb')
-        f = open('/nfs/datanumerik/people/araharin/two_MRNA_Single_Up_70_0/data_N_%d.pck'%(100+n1),'wb')
-        #f = open('/nfs/datanumerik/people/araharin/two_MRNA_Single_Up_0_70/data_N_%d.pck'%(100+n1),'wb')
-        #f = open('/nfs/datanumerik/people/araharin/two_MRNA_Single_Up_70_70/data_N_%d.pck'%(100+n1),'wb')
+        f = open('/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Single_Up/data_N_%d.pck'%n1,'wb')
         
         pickle.dump({'Obs': X_SSA ,'Time': T, 'dim_order':'Time, Dim, Repeat'},f)
         f.close()

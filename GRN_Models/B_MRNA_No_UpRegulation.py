@@ -56,11 +56,11 @@ species = ('G1','G2','P1','P2', 'M1','M2')
 
 delta_t = 0.5
 T = np.arange(0.0,80.0,delta_t)
-N =90000
+N =100000
 #delta_t = 0.25
 #T = np.arange(0.0,60.0,delta_t) # test data 
 #N =10000
-ntasks = 40#40
+ntasks = 40
 ##############
 ## SSA
 ##############
@@ -85,9 +85,7 @@ def Parrallel(SSAp, N, ntasks):
     
         X_SSA = np.array(Resamples).T
         
-        #f = open('/nfs/datanumerik/people/araharin/B_MRNA_No_Up/data_N_%d.pck'%n1,'wb')
-        #f = open('/nfs/datanumerik/people/araharin/two_MRNA_No_Up_test/data_B_N_%d.pck'%(100+n1),'wb')
-        f = open('/nfs/datanumerik/people/araharin/B_MRNA_No_Up/data_N_%d.pck'%(100+n1),'wb')
+        f = open('/nfs/datanumerik/people/araharin/Data_032021/B_MRNA_No_Up/data_N_%d.pck'%n1,'wb')
         pickle.dump({'Obs': X_SSA ,'Time': T, 'dim_order':'Time, Dim, Repeat'},f)
         f.close()
        
