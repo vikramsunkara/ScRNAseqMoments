@@ -15,7 +15,7 @@ theta = 5.0
 delta = 0.1
 k = 5.0
 
-def propensities(x, sigma_1 = sigma_1, sigma_2 = sigma_2):
+def propensities(x, sigma_1 = sigma_1, sigma_3 = sigma_3):
     return np.array([
         sigma_1*x[3]*(1-x[0]),
 		sigma_2*x[0],
@@ -91,12 +91,12 @@ import time
 tick = time.time()
 
 sigma_1_list = sigma_1*np.array([1/2, 2, 2**2, 2**3, 2**4]) # to run sensitivity to sigma_1
-sigma_2_list = sigma_2*np.array([1/2, 2, 2**2, 2**3, 2**4]) # to run sensitivity to sigma_1
+sigma_3_list = sigma_3*np.array([1/2, 2, 2**2, 2**3, 2**4]) # to run sensitivity to sigma_1
 
 for i in range(len(sigma_1_list)):
     sigma1 = sigma_1_list[i]
-    sigma2 = sigma_2_list[i]
-    propensities_p = partial(propensities, sigma_1 = sigma1, sigma_2 = sigma2)
+    sigma3 = sigma_3_list[i]
+    propensities_p = partial(propensities, sigma_1 = sigma1, sigma_3 = sigma3)
 
     SSAp = partial(SSA.SSA_Fixed_Width_Trajectory, Stochiometry = transitions, Propensities = propensities_p, X_0 = initial_state,T_Obs_Points=T)
     Parrallel(SSAp, N, ntasks, i)
