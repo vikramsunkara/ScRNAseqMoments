@@ -11,8 +11,6 @@ def Give_Regulatory_Network(T_Window, avg_Reaction_Propensity):
         if A_Up > Threshold:
                 Reg_Net[0,0] =  A_Up/A_death # A_Up - A_death
         
-        print("No a Up")
-        
         if B_Up > Threshold:
                 Reg_Net[1,1] =  B_Up/B_death # B_Up - B_death
         

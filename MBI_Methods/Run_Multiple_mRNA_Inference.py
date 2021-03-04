@@ -96,7 +96,7 @@ inds = np.where(NLLS_Moments_Fit+Moments_Spline)[0]
 moms_lookUp_list = [moms_lookUp_list[i] for i in inds]
 Design_Blocks_NLLS = GDB(hash_lookUp, moms_lookUp_list, Verbose=False)
 enablePrint()
-pdb.set_trace()
+
 
 
 def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs'):
