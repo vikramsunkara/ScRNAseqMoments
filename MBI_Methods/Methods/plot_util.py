@@ -30,7 +30,7 @@ def plot_Fit_and_Data(T, Moms, Fit_Moms, indexes, name = 'None', fig_num=1, show
     pl.legend()
 
     pl.subplot(2,2,4)
-    pdb.set_trace()
+    #pdb.set_trace()
     alpha = (Moms[:,4]-Moms[:,1]*Moms[:,2])/Moms[:,3]
     alpha_Fit = (Fit_Moms[:,4]-Fit_Moms[:,1]*Fit_Moms[:,2])/Fit_Moms[:,3]
     pl.plot(T,alpha,label='alpha_data')
@@ -45,9 +45,9 @@ def plot_Fit_and_Data(T, Moms, Fit_Moms, indexes, name = 'None', fig_num=1, show
         pl.show()
     else:
         pdf.savefig(ax)
-    pl.clf()
+    #pl.clf()
 
-def plot_reaction_Firing(K,T,Moms, name, fig_num=1, show=True, pdf = None):
+def plot_reaction_Firing(K, T, Moms, name, fig_num=1, show=True, pdf = None):
 
     Mom_inds = [0,0,1,2,4,4,2,1,2,1]
 
@@ -64,6 +64,7 @@ def plot_reaction_Firing(K,T,Moms, name, fig_num=1, show=True, pdf = None):
         react.append(Moms[:,Mom_inds[k]]*K[k])
         if k in [4,5,6,9]:
             pl.plot(T, react[-1],label=names[k])
+        
     pl.ylabel('Reaction Rate per second')
     pl.xlabel('Time')
     pl.legend()
@@ -84,7 +85,7 @@ def plot_reaction_Firing(K,T,Moms, name, fig_num=1, show=True, pdf = None):
         pl.show()
     else:
         pdf.savefig(ax)
-    pl.clf()
+    #pl.clf()
 
     return Give_Regulatory_Network(T[-1]-T[0], np.average(np.array(react),axis=1))
 

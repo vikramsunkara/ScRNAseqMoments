@@ -74,12 +74,12 @@ Spline_der_bool = True
 ###
 
 W_BM_LLS = np.eye(np.sum(MB_LLS_Moments_Fit))
-W_BM_LLS[1,1] = 1.#40.0
-W_BM_LLS[2,2] = 1.#40.0
+W_BM_LLS[1,1] = 40.0
+W_BM_LLS[2,2] = 40.0
 
 W_NLLS = np.eye(np.sum(NLLS_Moments_Fit))
-W_NLLS[1,1] = 1.#40.0
-W_NLLS[2,2] = 1.#40.0
+W_NLLS[1,1] = 40.0
+W_NLLS[2,2] = 40.0
 
 #######
 # Load Design Blocks
@@ -99,7 +99,7 @@ enablePrint()
 
 
 
-def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs'):
+def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = None):
         '''
         @params Data_list: list of moments data to infere GRN from            list of array      (#num_data) 
         @params Data_Names: corresponding names of data                       list of string     (#num_data)
@@ -171,8 +171,9 @@ def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15
             MB_LLS_Reg_Networks.append(Reg_Net_MB_LLS)
 
             ## RENDERING NLLS
-            name_of_plot = "%s | NLLA %s:"%(Run_Name,Data_Names[i]) + "\n"+ "[%.4f, %.4f, %.4f, %.4f, %.4g, %.4g, %.4f, %.4f, %.4f, %.4f]"%tuple(NLLS_est)
+            name_of_plot = "%s | NLLS %s:"%(Run_Name,Data_Names[i]) + "\n"+ "[%.4f, %.4f, %.4f, %.4f, %.4g, %.4g, %.4f, %.4f, %.4f, %.4f]"%tuple(NLLS_est)
             res, pred = PushForward_Func(NLLS_est, E, T, Design_Blocks_NLLS, NLLS_Moments_Fit, Moments_Spline, Spline_der_bool)
+            plot_Fit_and_Data(T, E, pred, indexes, name_of_plot, fig_num=i+1, show=False, pdf = NLLS_pdf_push_forward)
             Reg_Net_NLLS = plot_reaction_Firing(NLLS_est, T, E, name_of_plot, fig_num=i+1, show=False, pdf=NLLS_pdf_reaction_firing)
             NLLS_Reg_Networks.append(Reg_Net_NLLS)
 
