@@ -82,7 +82,7 @@ def Parrallel(SSAp, N, ntasks, i):
     
         X_SSA = np.array(Resamples).T
     
-        f = open('/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Double_Up/data_N_%d_%d.pck'%(n1, i),'wb')
+        f = open('/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Double_Up/data_N_%d_%d_1chng.pck'%(n1, i),'wb')
         pickle.dump({'Obs': X_SSA ,'Time': T, 'dim_order':'Time, Dim, Repeat'},f)
         f.close()
         
@@ -95,8 +95,8 @@ sigma_3_list = sigma_3*np.array([1/2, 2, 2**2, 2**3, 2**4]) # to run sensitivity
 
 for i in range(len(sigma_1_list)):
     sigma1 = sigma_1_list[i]
-    sigma3 = sigma_3_list[i]
-    propensities_p = partial(propensities, sigma_1 = sigma1, sigma_3 = sigma3)
+    #sigma3 = sigma_3_list[i]
+    propensities_p = partial(propensities, sigma_1 = sigma1)#, sigma_3 = sigma3)
 
     SSAp = partial(SSA.SSA_Fixed_Width_Trajectory, Stochiometry = transitions, Propensities = propensities_p, X_0 = initial_state,T_Obs_Points=T)
     Parrallel(SSAp, N, ntasks, i)
