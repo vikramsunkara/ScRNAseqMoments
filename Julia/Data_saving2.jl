@@ -8,7 +8,7 @@ using DataFrames
 datapath = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/"
 
 for s in 1:5
-    path_kernels = [string("Double_Up_data_", s-1, '_'), string("Double_Up_data_", s-1, "1chng_"), string("Single_Up_data_", s-1, '_')] # Check order of data in result dataframe
+    path_kernels = [string("Double_Up_data_", s-1, '_'), string("Double_Up_data_", s-1, "_1chng_"), string("Single_Up_data_", s-1, '_')] # Check order of data in result dataframe
     
     algorithm = MINetworkInference()
     
@@ -68,4 +68,4 @@ for s in 1:5
     		Num_D = collect_edges_num[1], Num_N = collect_edges_num[2], Num_S = collect_edges_num[3])
     
     Result_file = string("MI_10000traj_shift30_", s-1, ".csv")
-    CSV.write(, df)
+    CSV.write(Result_file, df)
