@@ -48,7 +48,7 @@ for i in range(len(File_list)):
         Moms_time_data.append(data)
     
     # preform GRN inference for each dataset in the Batch
-    Batch_Inference(Moms_time_data, [DLab_m[i]+"(#%d)"%n for n in range(BatchNum)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs')
+    Batch_Inference(Moms_time_data, [DLab_m[i]+"(#%d)"%n for n in range(BatchNum)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = indexes)
 
 
 

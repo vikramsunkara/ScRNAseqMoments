@@ -108,3 +108,5 @@ for i in range(len(sigma_1_list)):
 
 
 
+
+
