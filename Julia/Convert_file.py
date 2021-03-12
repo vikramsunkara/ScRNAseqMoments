@@ -119,7 +119,7 @@ if __name__  == "__main__":
         Packing(in3, out3, species_bool, subsamples = 10000, Num_sets = 400)
     """
     
-    for i in range(len(sigma_1_list)):
+    for i in range(3, len(sigma_1_list)):
         ### Convert into PIDC MI formats #### The result is not different from shift = 0
         shift = 30 # we had a shift of 30 in the Batch run for the moment based approach
         in1 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d.pck"%i 
