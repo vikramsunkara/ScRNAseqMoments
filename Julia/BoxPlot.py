@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
 import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages
+
+
+pdf= PdfPages("Figures/MI_sensitivity"+".pdf")
 
 data0 = pd.read_csv("MI_10000traj_shift30.csv")
 data0.head()
@@ -11,9 +15,9 @@ No_Up = data0["No_Up"]
 sigma_1 = 0.01875
 sigma_1_list = sigma_1*np.array([1/2, 2, 2**2, 2**3, 2**4])
     
+mes   = ["halved"]+["times %d"%2**i for i in (1, 2, 3, 4)]  
     
-    
-for i in range(3):#len(sigma_1_list)):
+for i in range(len(sigma_1_list)):
     data1 = pd.read_csv("MI_10000traj_shift30_%d.csv"%i)
     
     df = {}
@@ -69,6 +73,10 @@ for i in range(3):#len(sigma_1_list)):
     m_comp = pairwise_tukey(data=d_melt, dv='value', between='treatments')
     print(m_comp)
     
+    plt.title("Regulation: "+mes[i], fontsize = 16)
     plt.tight_layout()
-    plt.savefig("Figures/MI_%d.pdf"%i)
+    pdf.savefig(fig)
+    
+    
+pdf.close()
 
