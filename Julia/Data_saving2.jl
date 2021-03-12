@@ -7,7 +7,7 @@ using DataFrames
 
 datapath = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/"
 
-for s in 1:5
+for s in 4:5
     path_kernels = [string("Double_Up_data_", s-1, '_'), string("Double_Up_data_", s-1, "_1chng_"), string("Single_Up_data_", s-1, '_')] # Check order of data in result dataframe
     
     algorithm = MINetworkInference()
