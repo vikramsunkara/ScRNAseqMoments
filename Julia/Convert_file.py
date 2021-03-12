@@ -124,11 +124,11 @@ if __name__  == "__main__":
         out1_kernel = "/nfs/datanumerik/people/araharin/Data_2021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_"%i
         PIDCMI_format(in1, out1_kernel, shift)
         
-        in2 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Double_Up_data_%d_1chng.pck"%i
+        in2 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Double_Up_data_%d_1chng.pck"%i
         out2_kernel = "/nfs/datanumerik/people/araharin/Data_2021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_1chng_"%i
         PIDCMI_format(in2, out2_kernel, shift)
         
-        in3 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Single_Up_data_%d.pck"%i
+        in3 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Single_Up_data_%d.pck"%i
         out3_kernel = "/nfs/datanumerik/people/araharin/Data_2021/Unpacked_MRNA_data_10000/txt_start30/Single_Up_data_%d_"%i
         PIDCMI_format(in3, out3_kernel, shift)
     
