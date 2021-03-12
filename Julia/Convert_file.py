@@ -101,7 +101,7 @@ if __name__  == "__main__":
     
     
     
-    for i in range(sigma_1_list):
+    for i in range(len(sigma_1_list)):
         ### Packing up Data #### this is fast
         in1 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Double_Up_data_%d.pck"%i #Set 1
         out1 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Double_Up_data_%d.pck"%i
@@ -113,8 +113,8 @@ if __name__  == "__main__":
         
         Packing(in2, out2, species_bool, subsamples = 10000, Num_sets = 400)
         
-        in3 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Single_Up_data_%d.pck" # Set3
-        out3 = "/nfs/datanumerik/people/araharin/Data_20201/Packed_two_MRNA_Single_Up_data_%d.pck"
+        in3 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Single_Up_data_%d.pck"%i # Set3
+        out3 = "/nfs/datanumerik/people/araharin/Data_20201/Packed_two_MRNA_Single_Up_data_%d.pck"%i
         
         Packing(in3, out3, species_bool, subsamples = 10000, Num_sets = 400)
       
