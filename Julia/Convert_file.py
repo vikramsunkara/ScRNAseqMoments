@@ -103,32 +103,32 @@ if __name__  == "__main__":
     
     for i in range(len(sigma_1_list)):
         ### Packing up Data #### this is fast
-        in1 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Double_Up_data_%d.pck"%i #Set 1
+        in1 = "/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Double_Up_data_%d.pck"%i #Set 1
         out1 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Double_Up_data_%d.pck"%i
         
         Packing(in1, out1, species_bool, subsamples = 10000, Num_sets = 400)
         
-        in2 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Double_Up_data_%d_1chng.pck"%i # Set 2
-        out2 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Double_Up_data_%d_1chng.pck"%i
+        in2 = "/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Double_Up_data_%d_1chng.pck"%i # Set 2
+        out2 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d_1chng.pck"%i
         
         Packing(in2, out2, species_bool, subsamples = 10000, Num_sets = 400)
         
-        in3 = "/nfs/datanumerik/people/araharin/Data_2021/two_MRNA_Single_Up_data_%d.pck"%i # Set3
-        out3 = "/nfs/datanumerik/people/araharin/Data_20201/Packed_two_MRNA_Single_Up_data_%d.pck"%i
+        in3 = "/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Single_Up_data_%d.pck"%i # Set3
+        out3 = "/nfs/datanumerik/people/araharin/Data_0320201/Packed_two_MRNA_Single_Up_data_%d.pck"%i
         
         Packing(in3, out3, species_bool, subsamples = 10000, Num_sets = 400)
       
         ### Convert into PIDC MI formats #### The result is not different from shift = 0
         shift = 30 # we had a shift of 30 in the Batch run for the moment based approach
-        in1 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Double_Up_data_%d.pck"%i 
-        out1_kernel = "/nfs/datanumerik/people/araharin/Data_2021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_"%i
+        in1 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d.pck"%i 
+        out1_kernel = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_"%i
         PIDCMI_format(in1, out1_kernel, shift)
         
-        in2 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Double_Up_data_%d_1chng.pck"%i
+        in2 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d_1chng.pck"%i
         out2_kernel = "/nfs/datanumerik/people/araharin/Data_2021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_1chng_"%i
         PIDCMI_format(in2, out2_kernel, shift)
         
-        in3 = "/nfs/datanumerik/people/araharin/Data_2021/Packed_two_MRNA_Single_Up_data_%d.pck"%i
+        in3 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Single_Up_data_%d.pck"%i
         out3_kernel = "/nfs/datanumerik/people/araharin/Data_2021/Unpacked_MRNA_data_10000/txt_start30/Single_Up_data_%d_"%i
         PIDCMI_format(in3, out3_kernel, shift)
     
