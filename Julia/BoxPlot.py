@@ -5,8 +5,7 @@ import pandas as pd
 import numpy as np
 
 data0 = pd.read_csv("MI_10000traj_shift30.csv")
-#data0.head()
-#pdb.set_trace()
+data0.head()
 No_Up = data0["No_Up"]
 
 sigma_1 = 0.01875
@@ -14,13 +13,20 @@ sigma_1_list = sigma_1*np.array([1/2, 2, 2**2, 2**3, 2**4])
     
     
     
-for i in range(len(sigma_1_list)):
-    data = pd.read_csv("MI_10000traj_shift30_%d.csv"%i)
+for i in range(3):#len(sigma_1_list)):
+    data1 = pd.read_csv("MI_10000traj_shift30_%d.csv"%i)
+    
+    df = {}
+    df["No_Up"] = No_Up
+    df["Double_Up"] = data1["Double_Up"]
+    df["Double_Up_1chng"] = data1["Double_Up_1chng"]
+    df["Single_Up"] = data1["Single_Up"]
+    
+    data = pd.DataFrame(df)
     
     Double_Up = data["Double_Up"]
     Double_Up_1chng = data["Double_Up_1chng"]
     Single_Up = data["Single_Up"]
-    
     
     matplotlib.rc('xtick', labelsize=20) 
     matplotlib.rc('ytick', labelsize=20) 
@@ -38,15 +44,16 @@ for i in range(len(sigma_1_list)):
     # One way anova https://reneshbedre.github.io/blog/anova.html
     import scipy.stats as stats
     # stats f_oneway functions takes the groups as input and returns F and P-value
-    fvalue, pvalue = stats.f_oneway(data['No_Up'], data['Single_Up'], data['Double_Up'])
+    fvalue, pvalue = stats.f_oneway(data0['No_Up'], data['Single_Up'], data['Double_Up'], data['Double_Up_1chng'])
     print("One way anova")
     print("Fvalue =", fvalue, "pvalue", pvalue)
     print("######################################")
     #### get an R like output
     import statsmodels.api as sm
     from statsmodels.formula.api import ols
+    
     # reshape the d dataframe suitable for statsmodels package 
-    d_melt = pd.melt(data.reset_index(), id_vars=['index'], value_vars=['No_Up', 'Single_Up', 'Double_Up', 'Doubl_Up_1chng'])
+    d_melt = pd.melt(data.reset_index(), id_vars=['index'], value_vars=["No_Up", 'Single_Up', 'Double_Up', 'Double_Up_1chng'])
     # replace column names
     d_melt.columns = ['index', 'treatments', 'value']
     # Ordinary Least Squares (OLS) model
@@ -63,5 +70,5 @@ for i in range(len(sigma_1_list)):
     print(m_comp)
     
     plt.tight_layout()
-    plt.savefig("Figures/MI_%i.pdf")
+    plt.savefig("Figures/MI_%d.pdf"%i)
 

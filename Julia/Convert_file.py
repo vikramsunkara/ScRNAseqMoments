@@ -71,7 +71,7 @@ def Packing(input_file, output_file, species_bool, subsamples = 1000, Num_sets =
     print('Packed to %s'%(output_file))    
 
 
-ntasks = 10 # for the cluster
+ntasks = 40 # for the cluster
 def PIDCMI_format(input_file, output_file_kernel, shift = 0):
     f = open(input_file, "rb")
     input_dic = pickle.load(f)
