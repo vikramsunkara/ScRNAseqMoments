@@ -100,7 +100,7 @@ if __name__  == "__main__":
     sigma_1_list = sigma_1*np.array([1/2, 2, 2**2, 2**3, 2**4])
     
     
-    
+    """
     for i in range(1, len(sigma_1_list)):
         ### Packing up Data #### this is fast
         in1 = "/nfs/datanumerik/people/araharin/Data_032021/two_MRNA_Double_Up_data_%d.pck"%i #Set 1
@@ -117,6 +117,7 @@ if __name__  == "__main__":
         out3 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Single_Up_data_%d.pck"%i
         
         Packing(in3, out3, species_bool, subsamples = 10000, Num_sets = 400)
+    """
     
     for i in range(len(sigma_1_list)):
         ### Convert into PIDC MI formats #### The result is not different from shift = 0
