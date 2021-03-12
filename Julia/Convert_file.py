@@ -71,7 +71,7 @@ def Packing(input_file, output_file, species_bool, subsamples = 1000, Num_sets =
     print('Packed to %s'%(output_file))    
 
 
-ntasks = 40 # for the cluster
+ntasks = 10 # for the cluster
 def PIDCMI_format(input_file, output_file_kernel, shift = 0):
     f = open(input_file, "rb")
     input_dic = pickle.load(f)
@@ -122,14 +122,15 @@ if __name__  == "__main__":
     for i in range(3, len(sigma_1_list)):
         ### Convert into PIDC MI formats #### The result is not different from shift = 0
         shift = 30 # we had a shift of 30 in the Batch run for the moment based approach
-        in1 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d.pck"%i 
-        out1_kernel = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_"%i
-        PIDCMI_format(in1, out1_kernel, shift)
-        
-        in2 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d_1chng.pck"%i
-        out2_kernel = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_1chng_"%i
-        PIDCMI_format(in2, out2_kernel, shift)
-        
+        if i>3:
+            in1 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d.pck"%i 
+            out1_kernel = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_"%i
+            PIDCMI_format(in1, out1_kernel, shift)
+            
+            in2 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Double_Up_data_%d_1chng.pck"%i
+            out2_kernel = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/Double_Up_data_%d_1chng_"%i
+            PIDCMI_format(in2, out2_kernel, shift)
+            
         in3 = "/nfs/datanumerik/people/araharin/Data_032021/Packed_two_MRNA_Single_Up_data_%d.pck"%i
         out3_kernel = "/nfs/datanumerik/people/araharin/Data_032021/Unpacked_MRNA_data_10000/txt_start30/Single_Up_data_%d_"%i
         PIDCMI_format(in3, out3_kernel, shift)
