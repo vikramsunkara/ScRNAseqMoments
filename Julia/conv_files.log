@@ -1,0 +1,36 @@
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/externals/loky/process_executor.py", line 431, in _process_worker
+    r = call_item()
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/externals/loky/process_executor.py", line 285, in __call__
+    return self.fn(*self.args, **self.kwargs)
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/_parallel_backends.py", line 595, in __call__
+    return self.func(*args, **kwargs)
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/parallel.py", line 253, in __call__
+    for func, args, kwargs in self.items]
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/parallel.py", line 253, in <listcomp>
+    for func, args, kwargs in self.items]
+  File "Convert_file.py", line 31, in write_to_file
+    out_file.close()
+OSError: [Errno 122] Disk quota exceeded
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "Convert_file.py", line 135, in <module>
+    PIDCMI_format(in3, out3_kernel, shift)
+  File "Convert_file.py", line 91, in PIDCMI_format
+    jb.Parallel(n_jobs = ntasks)(jb.delayed(write_to_file)(Runs[i][shift:, :, :], Time, Runs[i].shape[2], output_file_kernel + "%d.txt"%i) for i in range(len(Runs)))
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/parallel.py", line 1042, in __call__
+    self.retrieve()
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/parallel.py", line 921, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/site-packages/joblib/_parallel_backends.py", line 542, in wrap_future_result
+    return future.result(timeout=timeout)
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/concurrent/futures/_base.py", line 435, in result
+    return self.__get_result()
+  File "/scratch/zib/agsunkara/RahaConda/lib/python3.7/concurrent/futures/_base.py", line 384, in __get_result
+    raise self._exception
+OSError: [Errno 122] Disk quota exceeded
