@@ -48,7 +48,7 @@ def Load_moms_time(input_filename, Moments, keep_species =None, sample_size = 10
     f = open(input_filename,'rb')
     input_dic = pickle.load(f)
     f.close()
-    ### Subsampling for 1000 good runs ###
+    ### Subsampling for good runs ###
     inds = np.arange(0,input_dic['Obs'].shape[-1],1,dtype=np.int)
     new_inds = np.random.choice(inds,size=sample_size,replace=False)
     data = input_dic['Obs'][:,:,new_inds] # t in the simulations goes up to 80.0
