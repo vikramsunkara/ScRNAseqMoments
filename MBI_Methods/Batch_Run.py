@@ -38,14 +38,49 @@ Moments = [np.array(item) for item in indexes]
 Species_To_Store = np.array([False,False,False,False,True,True])
 
 BatchNum = 400 # Number of replicate datasets
+
+
+import joblib as jb
+from functools import partial 
+ntasks = 40
+
+temp_corr = True
+
 for i in range(len(File_list)):
     input_file = File_list[i]
     
-    # compute moments for BatchNum replicate datasets
+    # compute moments for BatchNum replicate datasets (without parallel computing)
+    """
     Moms_time_data = []
     for n in range(BatchNum):
-        data = Load_moms_time(input_file, Moments, keep_species = Species_To_Store)
-        Moms_time_data.append(data)
+        if temp_corr:
+            ''' 
+            @brief remove temporal correlation
+               
+            ''' 
+            data = Load_moms_time_diff(input_file, Moments, keep_species = Species_To_Store)
+        else:
+            '''
+            @brief ignore temporal correlation
+            '''
+            data = Load_moms_time(input_file, Moments, keep_species = Species_To_Store)
+
+        #Moms_time_data.append(data)
+    """
+    
+    # compute moments for BatchNum replicate datasets (with parallel computing)
+    if temp_corr:
+        ''' 
+        @brief remove temporal correlation
+        '''
+        Load_moms_time_p = partial(Load_moms_time_diff, input_filename = input_file, Moments = Moments, keep_species = Species_To_Store)
+    else:
+        '''
+        @brief ignore temporal correlation
+        '''
+        Load_moms_time_p = partial(Load_moms_time, input_filename = input_file, Moments = Moments, keep_species = Species_To_Store)
+        
+    Moms_time_data = jb.Parallel(n_jobs = ntasks)(jb.delayed(Load_moms_time_p)() for n in range(BatchNum))
     
     # preform GRN inference for each dataset in the Batch
     Batch_Inference(Moms_time_data, [DLab_m[i]+"(#%d)"%n for n in range(BatchNum)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = indexes)
