@@ -51,7 +51,10 @@ def Load_moms_time(input_filename, Moments, keep_species =None, sample_size = 10
     ### Subsampling for runs ###
     inds = np.arange(0,input_dic['Obs'].shape[-1],1,dtype=np.int)
     new_inds = np.random.choice(inds,size=sample_size,replace=False)
-    data = input_dic['Obs'][:120,:,new_inds] # only for time np.arange(0.0,60.0,delta_t), t in the simulations goes up to 80.0
+    #data = input_dic['Obs'][:120,:,new_inds] # only for time np.arange(0.0,60.0,delta_t), t in the simulations goes up to 80.0
+    data = input_dic['Obs'][:,:,new_inds]
+    
+    #T = input_dic['Time'][:120] # only for time np.arange(0.0,60.0,delta_t), time in the simulations goes up to 80.0
     T = input_dic['Time'][:]
     
     Moms = compute_moms(data, Moments, keep_species)
@@ -70,10 +73,11 @@ def diff_time_samples(input_dic, sample_size):
     
     inds = np.arange(0,Sim_data.shape[-1],1,dtype=np.int)
     
-    for t in range(Sim_data.shape[0], 120): # only for time np.arange(0.0,60.0,delta_t), t in the simulations goes up to 80.0
+    #for t in range(Sim_data.shape[0], 120): # only for time np.arange(0.0,60.0,delta_t), t in the simulations goes up to 80.0
+    for t in range(Sim_data.shape[0]):
         ### Subsampling for runs ###
         new_inds = np.random.choice(inds,size=sample_size,replace=False)
-        data[t, :, :] = Sim_data[t,:,new_inds] # time in the simulations goes up to 80.0
+        data[t, :, :] = Sim_data[t,:,new_inds] 
     
     return data
 
@@ -90,6 +94,8 @@ def Load_moms_time_diff(input_filename, Moments, keep_species =None, sample_size
     f.close()
    
     data = diff_time_samples(input_dic, sample_size)
+    
+    #T = input_dic['Time'][:120] # only for time np.arange(0.0,60.0,delta_t), time in the simulations goes up to 80.0
     T = input_dic['Time'][:]
     
     Moms = compute_moms(data, Moments, keep_species)
