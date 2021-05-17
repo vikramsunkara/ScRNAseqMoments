@@ -39,7 +39,7 @@ def compute_moms(data, Moments, keep_species):
 
 def Load_moms_time(input_filename, Moments, keep_species =None, sample_size = 10000):
     '''
-    @brief load datafile and compute target moments (ingnore the possibility of time correlation)
+    @brief load datafile and compute target moments (ingnore the possibility of temporal correlation)
     @param input_filename     : datafile                           pickle object containing ndarray of dimension (#Time, #Dim, #Repeats)
     @param Moments            : exponents                          List of arrays                                [(#Dim),...]
     @param keep_species       : species to compute moments         array of bools                                (#Dim,)
@@ -51,18 +51,18 @@ def Load_moms_time(input_filename, Moments, keep_species =None, sample_size = 10
     ### Subsampling for runs ###
     inds = np.arange(0,input_dic['Obs'].shape[-1],1,dtype=np.int)
     new_inds = np.random.choice(inds,size=sample_size,replace=False)
-    data = input_dic['Obs'][:,:,new_inds] # time in the simulations goes up to 80.0
+    data = input_dic['Obs'][:120,:,new_inds] # only for time np.arange(0.0,60.0,delta_t), t in the simulations goes up to 80.0
     T = input_dic['Time'][:]
     
     Moms = compute_moms(data, Moments, keep_species)
     return {"centers":Moms, "Times":T}
 
 
-###### New modules to remove the possibility of time correlation in the computation of the moments (Cf. Reviewer Nr.2) ######
+###### New modules to remove the possibility of temporal correlation in the computation of the moments (Cf. Reviewer Nr.2) ######
 
 def diff_time_samples(input_dic, sample_size):
     '''
-    @brief remove the possibility of time correlation by sampling different cells at each time point
+    @brief remove the possibility of temporal correlation by sampling different cells at each time point
     '''
     Sim_data = input_dic['Obs'] # -> numpy array           (#Time, #Dim, #Repeats)
 
@@ -70,7 +70,7 @@ def diff_time_samples(input_dic, sample_size):
     
     inds = np.arange(0,Sim_data.shape[-1],1,dtype=np.int)
     
-    for t in range(Sim_data.shape[0]):
+    for t in range(Sim_data.shape[0], 120): # only for time np.arange(0.0,60.0,delta_t), t in the simulations goes up to 80.0
         ### Subsampling for runs ###
         new_inds = np.random.choice(inds,size=sample_size,replace=False)
         data[t, :, :] = Sim_data[t,:,new_inds] # time in the simulations goes up to 80.0
@@ -79,7 +79,7 @@ def diff_time_samples(input_dic, sample_size):
 
 def Load_moms_time_diff(input_filename, Moments, keep_species =None, sample_size = 10000):
     '''
-    @brief load datafile and compute target moments (remove the possibility of time correlation)
+    @brief load datafile and compute target moments (remove the possibility of temporal correlation)
     @param input_filename     : datafile                           pickle object containing ndarray of dimension (#Time, #Dim, #Repeats)
     @param Moments            : exponents                          List of arrays                                [(#Dim),...]
     @param keep_species       : species to compute moments         array of bools                                (#Dim,)

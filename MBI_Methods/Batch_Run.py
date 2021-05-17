@@ -74,16 +74,22 @@ for i in range(len(File_list)):
         @brief remove temporal correlation
         '''
         Load_moms_time_p = partial(Load_moms_time_diff, input_filename = input_file, Moments = Moments, keep_species = Species_To_Store)
+        
+        Moms_time_data = jb.Parallel(n_jobs = ntasks)(jb.delayed(Load_moms_time_p)() for n in range(BatchNum))
+    
+        # preform GRN inference for each dataset in the Batch
+        Batch_Inference(Moms_time_data, [DLab_m[i]+"(#%d)"%n for n in range(BatchNum)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = 'PDF_rand', GRN_Save_dir = 'GRNs_rand', indexes = indexes)
+                
     else:
         '''
         @brief ignore temporal correlation
         '''
         Load_moms_time_p = partial(Load_moms_time, input_filename = input_file, Moments = Moments, keep_species = Species_To_Store)
         
-    Moms_time_data = jb.Parallel(n_jobs = ntasks)(jb.delayed(Load_moms_time_p)() for n in range(BatchNum))
+        Moms_time_data = jb.Parallel(n_jobs = ntasks)(jb.delayed(Load_moms_time_p)() for n in range(BatchNum))
     
-    # preform GRN inference for each dataset in the Batch
-    Batch_Inference(Moms_time_data, [DLab_m[i]+"(#%d)"%n for n in range(BatchNum)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = indexes)
+        # preform GRN inference for each dataset in the Batch
+        Batch_Inference(Moms_time_data, [DLab_m[i]+"(#%d)"%n for n in range(BatchNum)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = indexes)
 
 
 
