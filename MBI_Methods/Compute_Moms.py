@@ -68,7 +68,6 @@ def diff_time_samples(input_dic, sample_size):
     @brief remove the possibility of temporal correlation by sampling different cells at each time point
     '''
     Sim_data = input_dic['Obs'] # -> numpy array           (#Time, #Dim, #Repeats)
-
     data = np.zeros((Sim_data.shape[0], Sim_data.shape[1], sample_size))
     
     inds = np.arange(0,Sim_data.shape[-1],1,dtype=np.int)
@@ -77,7 +76,7 @@ def diff_time_samples(input_dic, sample_size):
     for t in range(Sim_data.shape[0]):
         ### Subsampling for runs ###
         new_inds = np.random.choice(inds,size=sample_size,replace=False)
-        data[t, :, :] = Sim_data[t,:,new_inds] 
+        data[t, :, :] = Sim_data[t][:,new_inds] 
     
     return data
 
