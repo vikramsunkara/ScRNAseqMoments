@@ -99,7 +99,7 @@ enablePrint()
 
 
 
-def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = None):
+def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = None, W_BM_LLS = W_BM_LLS, W_NLLS = W_NLLS):
         '''
         @params Data_list: list of moments data to infere GRN from            list of array      (#num_data) 
         @params Data_Names: corresponding names of data                       list of string     (#num_data)

@@ -37,7 +37,7 @@ indexes = [(1,0),(0,1),(2,0),(1,1),(0,2),(3,0),(2,1),(1,2),(0,3),(4,0),(3,1),(2,
 Moments = [np.array(item) for item in indexes]
 Species_To_Store = np.array([False,False,False,False,True,True])
 
-BatchNum = 40 # Number of replicate datasets
+BatchNum = 400 # Number of replicate datasets
 
 
 import joblib as jb
