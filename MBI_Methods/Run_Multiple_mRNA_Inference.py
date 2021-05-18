@@ -69,18 +69,6 @@ Moments_Spline = np.array([  False, False, False,
 Spline_der_bool = True 
 
 
-###
-# Weights on First Order Moments
-###
-
-W_BM_LLS = np.eye(np.sum(MB_LLS_Moments_Fit))
-W_BM_LLS[1,1] = 40.0
-W_BM_LLS[2,2] = 40.0
-
-W_NLLS = np.eye(np.sum(NLLS_Moments_Fit))
-W_NLLS[1,1] = 40.0
-W_NLLS[2,2] = 40.0
-
 #######
 # Load Design Blocks
 #######
@@ -99,7 +87,7 @@ enablePrint()
 
 
 
-def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = None, W_BM_LLS = W_BM_LLS, W_NLLS = W_NLLS):
+def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15,  PDF_Save_dir = 'PDF', GRN_Save_dir = 'GRNs', indexes = None, wt_LLS = 40.0, wt_NLLS = 40.0):
         '''
         @params Data_list: list of moments data to infere GRN from            list of array      (#num_data) 
         @params Data_Names: corresponding names of data                       list of string     (#num_data)
@@ -110,6 +98,19 @@ def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15
         @params GRNs: path to folder to save infered GRN
         
         '''
+        ###
+        # Weights on First Order Moments
+        ###
+        
+        W_BM_LLS = np.eye(np.sum(MB_LLS_Moments_Fit))
+        W_BM_LLS[1,1] = wt_LLS
+        W_BM_LLS[2,2] = wt_LLS
+        
+        W_NLLS = np.eye(np.sum(NLLS_Moments_Fit))
+        W_NLLS[1,1] = wt_NLLS
+        W_NLLS[2,2] = wt_NLLS
+        
+        
         MB_LLS_pdf_reaction_firing = PdfPages('%s/%s_MB_LLS_Reactions.pdf'%(PDF_Save_dir,Run_Name))
         NLLS_pdf_push_forward = PdfPages('%s/%s_NLLS_push_fowrads.pdf'%(PDF_Save_dir,Run_Name))
         NLLS_pdf_reaction_firing = PdfPages('%s/%s_NLLS_Reactions.pdf'%(PDF_Save_dir,Run_Name))
@@ -125,7 +126,9 @@ def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15
         
         status_sindy =[]
         status_nlls = []
-
+        
+        LLS_minima = []
+        NLLS_minima = []
         for i in range(len(Data_list)):
             print(Data_Names[i], "%d out of %d"%(i, len(Data_list)))
             #### Extract Data and Splice the required data points
@@ -178,6 +181,8 @@ def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15
             NLLS_Reg_Networks.append(Reg_Net_NLLS)
 
             print(Reg_Net_NLLS)
+            LLS_minima.append(x_opt)
+            NLLS_minima.append(NLLS_est)
 
             #plot_Fit_and_Data(T, E, pred, moms_lookUp_list, name = name_of_plot, fig_num=i+1, show=False, pdf=NLLS_pdf_push_forward)
 
@@ -193,4 +198,5 @@ def Batch_Inference(Data_list, Data_Names, Run_Name, shift = 30, sub_sample = 15
                         'NLLS_Comp_Times': NLLS_Times, 'MB-LLS_Comp_Times': MB_LLS_Times, "Status_MB_LLS":status_sindy, "Status_NLLS":status_nlls}
                     ,f)
         f.close()
+        return LLS_minima, NLLS_minima
 

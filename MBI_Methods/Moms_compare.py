@@ -13,6 +13,16 @@ import pylab as pl
 import matplotlib
 from scipy import stats
 
+# Disable print
+import sys, os
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
+# Restore print
+def enablePrint():
+    sys.stdout = sys.__stdout__
+
+from Run_Multiple_mRNA_Inference import Batch_Inference
+
 
 def PreFig():
     matplotlib.rc('xtick', labelsize=20) 
@@ -70,6 +80,57 @@ def plot_moms(Moms_data, indexes, title = None):
     return fig   
             
 
+def Inference_compare_random(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0):
+    # grab a random run
+    data = Moms_data[np.random.choice(np.arange(0,len(Moms_data),1,dtype=np.int))]
+    
+    print("weight LLS = 40.0, weight NLLS = 40.0")
+    LLS, NLLS = Batch_Inference([data], [DLab_m[i]+"(#%d)"%n for n in range(1)], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes)
+    
+    print("weight LLS = %.1f, weight NLLS = 40.0"%wt_LLS)
+    wLSS, NLLS = Batch_Inference([data], ["wLLS_"+DLab_m[i]+"(#%d)"%n for n in range(1)], "wLLS_"+DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes, wt_LLS = wt_LLS)
+            
+    print("weight LLS = 40.0, weight NLLS = %.1f"%wt_NLLS)
+    LLS, NLLS = Batch_Inference([data], ["wNLLS_"+DLab_m[i]+"(#%d)"%n for n in range(1)], "wNLLS_"+DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes, wt_NLLS = wt_NLLS)
+
+ 
+def Inference_compare(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0):
+    # grab a random run
+    data = Moms_data[::10]
+    
+    blockPrint()
+    print("weight LLS = 40.0, weight NLLS = 40.0")
+    LLS, NLLS = Batch_Inference(data, [DLab_m[i]+"(#%d)"%n for n in range(len(data))], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes)
+    
+    print("weight LLS = %.1f, weight NLLS = 40.0"%wt_LLS)
+    wLLS, NLLS2 = Batch_Inference(data, ["wLLS_"+DLab_m[i]+"(#%d)"%n for n in range(len(data))], "wLLS_"+DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes, wt_LLS = wt_LLS)
+            
+    print("weight LLS = 40.0, weight NLLS = %.1f"%wt_NLLS)
+    LLS2, wNLLS = Batch_Inference([data], ["wNLLS_"+DLab_m[i]+"(#%d)"%n for n in range(1)], "wNLLS_"+DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes, wt_NLLS = wt_NLLS)
+    enablePrint()
+    
+    
+    LLS = np.array(LLS)
+    wLLS = np.array(wLLS)
+    wNLLS = np.array(wNLLS)
+    
+    #save
+    f = open("GRBsave/Miminas.pck", "wb")
+    pickle.dump({"LLS":LLS, "wLLS":wLLS, "wNLLS":wNLLS, "w_val_LLS":wt_LLS, "w_val_NLLS":wt_NLLS}, f)
+    f.close()
+    
+    #open
+    f = open("GRBsave/Miminas.pck", "rb")
+    stuff = pickle.load(f)
+    f.close()
+    
+    LLS = stuff["LLS"]
+    wLLS = stuff["wLLS"]
+    pdb.set_trace()
+    Error = np.mean(np.abs(LLS - wLLS), axis = 0)
+    print("Minma Error: mean(abs(Theta_LLS(40) - Theta_LLS(%.f)))"%wt_LLS)    
+    print(Error)        
+       
 from Compute_Moms import *
 
 """
@@ -110,7 +171,7 @@ from functools import partial
 ntasks = 40
 
 
-for i in range(len(File_list)):
+for i in range(1,2):#, len(File_list)):
     input_file = File_list[i]
     
     # compute moments for BatchNum replicate datasets (without parallel computing)
@@ -162,9 +223,13 @@ for i in range(len(File_list)):
     Moms_time_data_diff = stuff["moms_runs"]
     
     #plot one run and 95% CI or STD
-    fig1 = plot_moms(Moms_time_data_diff, indexes, "Remove temporal correlation")
-    fig1.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2_diff.pdf", bbox_inches='tight')
+    #fig1 = plot_moms(Moms_time_data_diff, indexes, "Remove temporal correlation")
+    #fig1.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2_diff.pdf", bbox_inches='tight')
     
+    #plot one random inference LLS or NLLS weight different than the defaults
+    print("Remove temporal correlation: Random cell sample at every timepoint")
+    print("")
+    Inference_compare(Moms_time_data_diff,"/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/PDF_diff","/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/GRNs_diff", wt_LLS = 100.0, wt_NLLS = 100.0)
     
     '''
     @brief ignore temporal correlation
@@ -191,10 +256,14 @@ for i in range(len(File_list)):
     Moms_time_data = stuff["moms_runs"]
     
     #plot one run and 95% CI or STD
-    fig2 = plot_moms(Moms_time_data, indexes, "Ignore temporal correlation")
-    fig2.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2.pdf", bbox_inches='tight')
+    #fig2 = plot_moms(Moms_time_data, indexes, "Ignore temporal correlation")
+    #fig2.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2.pdf", bbox_inches='tight')
     
-
+    #plot one random inference LLS or NLLS weight different than the defaults
+    print("---------------------------------------------------------")
+    print("Ignore temporal correlation: Random sample trajectories")
+    print("")
+    Inference_compare(Moms_time_data,"/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/PDF","/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/GRNs", wt_LLS = 100.0, wt_NLLS = 100.0)
 
 
         
