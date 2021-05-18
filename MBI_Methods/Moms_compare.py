@@ -96,7 +96,7 @@ def Inference_compare_random(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS
  
 def Inference_compare(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0):
     # grab a random run
-    data = Moms_data[::10]
+    data = Moms_data[::4]
     
     blockPrint()
     print("weight LLS = 40.0, weight NLLS = 40.0")
@@ -106,7 +106,7 @@ def Inference_compare(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0
     wLLS, NLLS2 = Batch_Inference(data, ["wLLS_"+DLab_m[i]+"(#%d)"%n for n in range(len(data))], "wLLS_"+DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes, wt_LLS = wt_LLS)
             
     print("weight LLS = 40.0, weight NLLS = %.1f"%wt_NLLS)
-    LLS2, wNLLS = Batch_Inference([data], ["wNLLS_"+DLab_m[i]+"(#%d)"%n for n in range(1)], "wNLLS_"+DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes, wt_NLLS = wt_NLLS)
+    LLS2, wNLLS = Batch_Inference(data, ["wNLLS_"+DLab_m[i]+"(#%d)"%n for n in range(len(data))], "wNLLS_"+DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes, wt_NLLS = wt_NLLS)
     enablePrint()
     
     
@@ -115,18 +115,17 @@ def Inference_compare(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0
     wNLLS = np.array(wNLLS)
     
     #save
-    f = open("GRBsave/Miminas.pck", "wb")
+    f = open(GRNsave+"/%s_Mimina.pck"%DLab_m[i], "wb")
     pickle.dump({"LLS":LLS, "wLLS":wLLS, "wNLLS":wNLLS, "w_val_LLS":wt_LLS, "w_val_NLLS":wt_NLLS}, f)
     f.close()
     
     #open
-    f = open("GRBsave/Miminas.pck", "rb")
+    f = open(GRNsave+"/%s_Mimina.pck"%DLab_m[i], "rb")
     stuff = pickle.load(f)
     f.close()
     
     LLS = stuff["LLS"]
     wLLS = stuff["wLLS"]
-    pdb.set_trace()
     Error = np.mean(np.abs(LLS - wLLS), axis = 0)
     print("Minma Error: mean(abs(Theta_LLS(40) - Theta_LLS(%.f)))"%wt_LLS)    
     print(Error)        
@@ -171,7 +170,7 @@ from functools import partial
 ntasks = 40
 
 
-for i in range(1,2):#, len(File_list)):
+for i in range(len(File_list)):
     input_file = File_list[i]
     
     # compute moments for BatchNum replicate datasets (without parallel computing)
