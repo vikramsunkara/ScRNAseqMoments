@@ -50,12 +50,18 @@ def plot_moms(Moms_data, indexes, title = None):
         
             xbar = np.mean(Moms[t, j+1, :]) # the data includes order 0 moments (0, 0)
             sstd = np.std(Moms[t, j+1, :])
-        
-            c_low[t] = xbar - t_stats*sstd/np.sqrt(df)
-            c_up[t] = xbar + t_stats*sstd/np.sqrt(df)
+            
+            # 95% CI
+            #c_low[t] = xbar - t_stats*sstd/np.sqrt(df)
+            #c_up[t] = xbar + t_stats*sstd/np.sqrt(df)
+            
+            # std
+            c_low[t] = xbar - sstd
+            c_up[t] = xbar + sstd
         
         pl.plot(TT, moms[:, j+1], linewidth = 0.5, color = "green", label = "random run")
-        ax.fill_between(TT, c_low, c_up, color = "red", alpha = 0.75, label = "95% CI")
+        #ax.fill_between(TT, c_low, c_up, color = "red", alpha = 0.75, label = "95% CI")
+        ax.fill_between(TT, c_low, c_up, color = "red", alpha = 0.75, label = "STD")
         pl.title("$\mathbb{E}$[mRNA A$(t_d)^%d$ mRNA B$(t_d)^%d$]"%indexes[j])
         if j == 0:
             pl.legend()
@@ -155,14 +161,16 @@ for i in range(len(File_list)):
     
     Moms_time_data_diff = stuff["moms_runs"]
     
-    #plot one run and 95% CI
+    #plot one run and 95% CI or STD
     fig1 = plot_moms(Moms_time_data_diff, indexes, "Remove temporal correlation")
-    fig1.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"_diff.pdf", bbox_inches='tight')
+    fig1.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2_diff.pdf", bbox_inches='tight')
     
-    """
+    
     '''
     @brief ignore temporal correlation
     '''
+    
+    """
     Load_moms_time_p = partial(Load_moms_time, input_filename = input_file, Moments = Moments, keep_species = Species_To_Store)
     
     
@@ -171,9 +179,10 @@ for i in range(len(File_list)):
     
     ### save runs ####
     f = open("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"_%d"%BatchNum+".pck", "wb")
-    pickle.dump({"moms_runs":Moms_time_data_diff}, f)
+    pickle.dump({"moms_runs":Moms_time_data}, f)
     f.close()
     """
+    
     ### load runs ###
     g = open("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"_%d"%BatchNum+".pck", "rb")
     stuff = pickle.load(g)
@@ -181,9 +190,9 @@ for i in range(len(File_list)):
     
     Moms_time_data = stuff["moms_runs"]
     
-    #plot one run and 95% CI
+    #plot one run and 95% CI or STD
     fig2 = plot_moms(Moms_time_data, indexes, "Ignore temporal correlation")
-    fig2.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+".pdf", bbox_inches='tight')
+    fig2.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2.pdf", bbox_inches='tight')
     
 
 
