@@ -44,7 +44,7 @@ import joblib as jb
 from functools import partial 
 ntasks = 40
 
-temp_corr = True
+temp_corr = True # if True, then remove temporal correlation in the computation of the moments, i.e., take random cell sample at every timestep. If False, then take random trajectories instead.
 
 for i in range(len(File_list)):
     input_file = File_list[i]
