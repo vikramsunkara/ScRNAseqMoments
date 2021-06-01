@@ -24,10 +24,10 @@ def enablePrint():
 from Run_Multiple_mRNA_Inference import Batch_Inference
 
 
-def PreFig():
+def PreFig(width = 21, height = 14):
     matplotlib.rc('xtick', labelsize=20) 
     matplotlib.rc('ytick', labelsize=20) 
-    fig = pl.figure(figsize=(21,14))
+    fig = pl.figure(figsize=(width,height))
     return fig
 
 
@@ -35,8 +35,11 @@ def plot_moms(Moms_data, indexes, title = None):
     '''
     @brief Plot moments and 95% confidence interval
     '''
-    fig = PreFig()
+    fig = PreFig(width = 22, height = 7)
+    pl.suptitle(title)
     
+    fig_zoom = PreFig(width = 22, height = 7)
+    pl.suptitle(title)
     # grab a random run
     data = Moms_data[np.random.choice(np.arange(0,len(Moms_data),1,dtype=np.int))]
     TT = data['Times']
@@ -51,33 +54,58 @@ def plot_moms(Moms_data, indexes, title = None):
     df = len(Moms_data) - 1
     t_stats = stats.t.ppf(1-alpha, df)
     
-    for j in range(5): # plot the first 5 moments
-        ax = fig.add_subplot(2, 3, j+1)
+    l = 0
+    for j in (0, 3, 6):  #range(5): # plot the first 5 moments [(1,0),(0,1),(2,0),(1,1),(0,2),(3,0),(2,1),(1,2),(0,3),(4,0),(3,1),(2,2),(1,3),(0,4)]
+        #ax = fig.add_subplot(2, 3, l+1)
+        
         c_low = np.zeros(len(TT))
         c_up = np.zeros(len(TT))
-    
+        
+        ymin = np.zeros(len(TT))
+        ymax = np.zeros(len(TT))
+        
+        mvar = []
         for t in range(len(TT)):
         
-            xbar = np.mean(Moms[t, j+1, :]) # the data includes order 0 moments (0, 0)
+            mbar = np.mean(Moms[t, j+1, :]) # the data includes order 0 moments (0, 0)
+            #mvar.append(np.var(Moms[t, j+1, :]))
             sstd = np.std(Moms[t, j+1, :])
             
             # 95% CI
-            #c_low[t] = xbar - t_stats*sstd/np.sqrt(df)
-            #c_up[t] = xbar + t_stats*sstd/np.sqrt(df)
+            #c_low[t] = mbar - t_stats*sstd/np.sqrt(df)
+            #c_up[t] = mbar + t_stats*sstd/np.sqrt(df)
             
             # std
-            c_low[t] = xbar - sstd
-            c_up[t] = xbar + sstd
+            c_low[t] = mbar - 2*sstd
+            c_up[t] = mbar + 2*sstd
+            
+            ymin[t] = mbar - 4*sstd
+            ymax[t] = mbar + 4*sstd
         
-        pl.plot(TT, moms[:, j+1], linewidth = 0.5, color = "green", label = "random run")
+        #pl.plot(TT, xvar, linewidth = 2, color = "green", label = "Variance of Moments")
+        ax = fig.add_subplot(1, 3, l+1)
+        ax.plot(TT, moms[:, j+1], linewidth = 1., color = "green", label = "random run")
         #ax.fill_between(TT, c_low, c_up, color = "red", alpha = 0.75, label = "95% CI")
-        ax.fill_between(TT, c_low, c_up, color = "red", alpha = 0.75, label = "STD")
-        pl.title("$\mathbb{E}$[mRNA A$(t_d)^%d$ mRNA B$(t_d)^%d$]"%indexes[j])
+        ax.fill_between(TT, c_low, c_up, color = "red", alpha = 0.5, label = "+/- 2STD")
+        ax.set_title("$\mathbb{E}$[mRNA A$(t)^%d$ mRNA B$(t)^%d$]"%indexes[j])
+        
+        
+        ax2 = fig_zoom.add_subplot(1, 3, l+1)
+        ax2.plot(TT, moms[:, j+1], linewidth = 2.5, color = "green", label = "random run")
+        #ax.fill_between(TT, c_low, c_up, color = "red", alpha = 0.75, label = "95% CI")
+        ax2.fill_between(TT, c_low, c_up, color = "red", alpha = 0.5, label = "+/- 2STD")
+        ax2.set_xlim(40, 60)
+        ax2.set_ylim(min(ymin[(TT>40) & (TT<60)]),max(ymax[(TT>40) & (TT<60)]))
+        ax2.set_title("$\mathbb{E}$[mRNA A$(t)^%d$ mRNA B$(t)^%d$]"%indexes[j])
+        
+        l+=1
+        
         if j == 0:
-            pl.legend()
+            ax.legend()
+            ax2.legend()
     
-    pl.suptitle(title)
-    return fig   
+    
+    return fig, fig_zoom 
             
 
 def Inference_compare_random(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0):
@@ -96,8 +124,10 @@ def Inference_compare_random(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS
  
 def Inference_compare(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0):
     # grab a random run
+    
     data = Moms_data[::4]
     
+    """
     blockPrint()
     print("weight LLS = 40.0, weight NLLS = 40.0")
     LLS, NLLS = Batch_Inference(data, [DLab_m[i]+"(#%d)"%n for n in range(len(data))], DLab_m[i], shift = 30, sub_sample = 15, PDF_Save_dir = PDFsave, GRN_Save_dir = GRNsave, indexes = indexes)
@@ -118,6 +148,7 @@ def Inference_compare(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0
     f = open(GRNsave+"/%s_Mimina.pck"%DLab_m[i], "wb")
     pickle.dump({"LLS":LLS, "wLLS":wLLS, "wNLLS":wNLLS, "w_val_LLS":wt_LLS, "w_val_NLLS":wt_NLLS}, f)
     f.close()
+    """
     
     #open
     f = open(GRNsave+"/%s_Mimina.pck"%DLab_m[i], "rb")
@@ -127,7 +158,7 @@ def Inference_compare(Moms_data, PDFsave, GRNsave, wt_LLS = 40.0, wt_NLLS = 40.0
     LLS = stuff["LLS"]
     wLLS = stuff["wLLS"]
     Error = np.mean(np.abs(LLS - wLLS), axis = 0)
-    print("Minma Error: mean(abs(Theta_LLS(40) - Theta_LLS(%.f)))"%wt_LLS)    
+    print(DLab_m[i] + " Minma Error: mean(abs(Theta_LLS(40) - Theta_LLS(%.f)))"%wt_LLS, "num_runs = %d"%len(data))    
     print(Error)        
        
 from Compute_Moms import *
@@ -170,7 +201,7 @@ from functools import partial
 ntasks = 40
 
 
-for i in range(len(File_list)):
+for i in range(2, len(File_list)):
     input_file = File_list[i]
     
     # compute moments for BatchNum replicate datasets (without parallel computing)
@@ -222,13 +253,14 @@ for i in range(len(File_list)):
     Moms_time_data_diff = stuff["moms_runs"]
     
     #plot one run and 95% CI or STD
-    #fig1 = plot_moms(Moms_time_data_diff, indexes, "Remove temporal correlation")
-    #fig1.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2_diff.pdf", bbox_inches='tight')
+    fig1, fig2 = plot_moms(Moms_time_data_diff, indexes, "Randomised Cell Samples")
+    fig1.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2_diff.pdf", bbox_inches='tight')
+    fig2.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2_diff_zoom.pdf", bbox_inches='tight')
+
     
     #plot one random inference LLS or NLLS weight different than the defaults
     print("Remove temporal correlation: Random cell sample at every timepoint")
-    print("")
-    Inference_compare(Moms_time_data_diff,"/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/PDF_diff","/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/GRNs_diff", wt_LLS = 100.0, wt_NLLS = 100.0)
+    #Inference_compare(Moms_time_data_diff, "/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/PDF_diff","/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/GRNs_diff", wt_LLS = 100.0, wt_NLLS = 100.0)
     
     '''
     @brief ignore temporal correlation
@@ -255,14 +287,15 @@ for i in range(len(File_list)):
     Moms_time_data = stuff["moms_runs"]
     
     #plot one run and 95% CI or STD
-    #fig2 = plot_moms(Moms_time_data, indexes, "Ignore temporal correlation")
-    #fig2.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2.pdf", bbox_inches='tight')
+    fig3, fig4 = plot_moms(Moms_time_data, indexes, "Randomised Trajectories")
+    fig3.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2.pdf", bbox_inches='tight')
+    fig4.savefig("/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/"+DLab_m[i]+"2_zoom.pdf", bbox_inches='tight')
+
     
     #plot one random inference LLS or NLLS weight different than the defaults
     print("---------------------------------------------------------")
-    print("Ignore temporal correlation: Random sample trajectories")
-    print("")
-    Inference_compare(Moms_time_data,"/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/PDF","/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/GRNs", wt_LLS = 100.0, wt_NLLS = 100.0)
-
+    print("Ignore temporal correlation: Random Sample trajectories")
+    #Inference_compare(Moms_time_data,"/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/PDF","/nfs/datanumerik/people/araharin/2mRNA_100000/Moments/GRNs", wt_LLS = 100.0, wt_NLLS = 100.0)
+    print("---------------------------------------------------------")
 
         
