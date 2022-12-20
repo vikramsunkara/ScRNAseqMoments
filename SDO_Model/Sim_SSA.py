@@ -42,7 +42,7 @@ S = np.array([      [1,0], #1
                     [-1,-1],#9
                     [-1,1],#10
                     [1,0],#11
-                    [0,1],#12SSA_moms_std(K_sindy, T, Moments_collect, K_lab = "K_sindy/SSA_samples/", subfit = sub_sample, Num_samples = N_samples, moms_lookUp_val = moms_lookUp, ntasks = ntasks)
+                    [0,1],#12
                     [1,-1]#13  # Stoichiometries for each reactions
                     
                     ])
