@@ -34,7 +34,7 @@ def propensities(x):
 		k*x[3],
 		delta*x[5]
                 ])
-transitions = np.array([ #(1,0,0,0,0,0),  # G_1_off + P2 --> G_1_on 
+transitions = np.array([ #(1,0,0,0,0,0),  # G_1_off --> G_1_on 
 				#(-1,0,0,0,0,0), # G_1_on --> G_1_off
 				#(0,0,0,0,1,0),  # G_1_off --> G_1_off + M1
 				#(0,0,0,0,1,0),	# G_1_on --> G_1_on + M1
